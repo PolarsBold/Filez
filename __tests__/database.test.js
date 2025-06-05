@@ -15,7 +15,7 @@ describe("Database schema", () => {
       expect.arrayContaining([
         { column_name: "id", data_type: "integer", is_nullable: "NO" },
         { column_name: "name", data_type: "text", is_nullable: "NO" },
-      ]),
+      ])
     );
   });
 
@@ -32,7 +32,7 @@ describe("Database schema", () => {
         { column_name: "name", data_type: "text", is_nullable: "NO" },
         { column_name: "size", data_type: "integer", is_nullable: "NO" },
         { column_name: "folder_id", data_type: "integer", is_nullable: "NO" },
-      ]),
+      ])
     );
   });
 
@@ -43,16 +43,18 @@ describe("Database schema", () => {
     const isFolderIdUnique = await isColumnConstrained(
       "files",
       "folder_id",
-      "unique",
+      "unique"
     );
-    expect(isFolderIdUnique).toBe(true);
+    //This is inacurate as far as I can tell, if folder_id is unique
+    //multiple files can never be in the same folder as far as I understand it
+    expect(isFolderIdUnique).toBe(false);
   });
 
   test(`"folder_id" column of "files" table is a foreign key`, async () => {
     const isFolderIdForeignKey = await isColumnConstrained(
       "files",
       "folder_id",
-      "foreign key",
+      "foreign key"
     );
     expect(isFolderIdForeignKey).toBe(true);
   });
@@ -79,7 +81,7 @@ describe("Database is seeded with", () => {
   test("at least 5 files in each folder", async () => {
     const { rowCount: numFolders } = await db.query("SELECT * FROM folders");
     const { rowCount: numFoldersWithFiles } = await db.query(
-      "SELECT count(*) FROM files GROUP BY folder_id HAVING count(*) >= 5",
+      "SELECT count(*) FROM files GROUP BY folder_id HAVING count(*) >= 5"
     );
     expect(numFoldersWithFiles).toBe(numFolders);
   });
